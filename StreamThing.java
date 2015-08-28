@@ -1,7 +1,19 @@
-class StreamThing
+public class StreamThing
 {
     public static void main (String[] args)
     {
-        System.out.println("Hello world!");
+        try
+        {
+            StreamThing obj = new StreamThing();
+            obj.run();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+    private void run()
+    {
+        new STFrame();
     }
 }
