@@ -6,3 +6,7 @@ Simply execute `./build.sh` in main directory
 
 ### How to run
 Navigate in to the newly created `build` directory and run `java -jar StreamThing.jar`
+
+_or_
+
+In the main directory run `./build.sh run`

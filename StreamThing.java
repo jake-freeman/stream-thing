@@ -1,3 +1,11 @@
+/**
+ * StreamThing class exists simply as a container
+ * that safely create the STFrame objects.
+ *
+ * @author jake-freeman
+ *
+ */
+
 public class StreamThing
 {
     public static void main (String[] args)
