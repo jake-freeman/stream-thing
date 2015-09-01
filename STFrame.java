@@ -14,11 +14,12 @@ import java.io.*;
 
 public class STFrame extends JFrame
 {
-    private JButton[] colors1;
-    private JButton[] colors2;
+    private final String CHAR_PATH = "chars";
 
-    private JComboBox p1;
-    private JComboBox p2;
+    //private char[]   currentColors;
+
+    private JButton[]   colors;
+    private JComboBox[] p;
 
     public STFrame()
     {
@@ -26,13 +27,16 @@ public class STFrame extends JFrame
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
 
-        ArrayList<File>   fileList = getFileList("chars");
+        ArrayList<File>   fileList = getFileList(CHAR_PATH);
         ArrayList<String> charList = getCharList(fileList);
 
-        colors1 = new JButton[6];
-        colors2 = new JButton[6];
-        p1      = new JComboBox(charList.toArray());
-        p2      = new JComboBox(charList.toArray());
+        colors  = new JButton[12];
+        for (int i = 0; i < colors.length; i++)
+            colors[i] = new JButton();
+
+        p       = new JComboBox[2];
+        p[0]    = new JComboBox<Object>(charList.toArray());
+        p[1]    = new JComboBox<Object>(charList.toArray());
 
         addActionListeners();
         addComponentsToPane(getContentPane());
@@ -47,17 +51,37 @@ public class STFrame extends JFrame
     */
     private void addActionListeners()
     {
-        p1.addActionListener
-        (
-            new ActionListener()
-            {
-                public void actionPerformed(ActionEvent e)
+        for (int i = 0; i < p.length; i++)
+        {
+            final int j = i;
+            p[i].addActionListener
+            (
+                new ActionListener()
                 {
-                    System.out.println("Selected: " + (String)((JComboBox)e.getSource()).getSelectedItem());
-                    charSelect((String)((JComboBox)e.getSource()).getSelectedItem());
+                    public void actionPerformed(ActionEvent e)
+                    {
+                        System.out.println("Selected(" + j + "): " + (String)((JComboBox)e.getSource()).getSelectedItem());
+                        charSelect((String)((JComboBox)e.getSource()).getSelectedItem(), 'A', CHAR_PATH);
+                    }
                 }
-            }
-        );
+            );
+        }
+
+        for (int i = 0; i < colors.length; i++)
+        {
+            final int j = i;
+            colors[i].addActionListener
+            (
+                new ActionListener()
+                {
+                    public void actionPerformed(ActionEvent e)
+                    {
+                        System.out.println("Selected(p" + j + "): " + (String)((JButton)e.getSource()).getText());
+                        charSelect((String)((JButton)e.getSource()).getText(), 'A'/*[HACK]*/, CHAR_PATH);
+                    }
+                }
+            );
+        }
     }
 
     /**
@@ -72,13 +96,23 @@ public class STFrame extends JFrame
         GridBagConstraints c = new GridBagConstraints();
 
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(20,10,20,10);  // padding
+        c.gridwidth = 6;
+        c.insets = new Insets(20,10,5,10);  // padding
         c.gridx = 0;
         c.gridy = 0;
-        pane.add(p1, c);
+        pane.add(p[0], c);
 
         c.gridx = 6;
-        pane.add(p2, c);
+        pane.add(p[1], c);
+
+        c.gridy = 1;
+        c.gridwidth = 1;
+        c.insets = new Insets(5,5,10,5);
+        for (int i = 0; i < colors.length; i++)
+        {
+            c.gridx = i;
+            pane.add(colors[i],c);
+        }
     }
 
     /**
@@ -86,9 +120,12 @@ public class STFrame extends JFrame
     * update files and button colors.
     *
     * @param charName name of character currently selected
+    * @param color    
+    * @param charPath path to the character folder
     */
-    private void charSelect(String charName)
+    private void charSelect(String charName, char color, String charPath)
     {
+        String fileNameBase = charName.replace(" ", "-");
         // select character
     }
 
@@ -109,7 +146,7 @@ public class STFrame extends JFrame
             if (character.charAt(character.length() - 1) == 'A')
             {
                 // omits 'A' at the beginning of the string and replaces dashes with spaces
-                chars.add(character.substring(0, character.length() - 1).replace("-"," "));
+                chars.add(character.substring(0, character.length() - 1).replace("-", " "));
             }
         }
         // sorts by numerical value
