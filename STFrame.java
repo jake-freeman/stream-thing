@@ -82,6 +82,17 @@ public class STFrame extends JFrame
     }
 
     /**
+    * Include code to handle character changes to
+    * update files and button colors.
+    *
+    * @param charName name of character currently selected
+    */
+    private void charSelect(String charName)
+    {
+        // select character
+    }
+
+    /**
     * Creates a list of character names based on file list
     *
     * @param  files an ArrayList of files to extract names from
@@ -97,31 +108,8 @@ public class STFrame extends JFrame
             // this effectively picks the default character file for a name
             if (character.charAt(character.length() - 1) == 'A')
             {
-                // omits 'A' at the begining of the string
-                character = character.substring(0, character.length() - 1);
-                // quick and dirty translation table for longer character names
-                switch (character)
-                {
-                    case "Captain":
-                        character = "Captain-Falcon";
-                        break;
-                    case "Donkey":
-                        character = "Donkey-Kong";
-                        break;
-                    case "Dr":
-                        character = "Dr-Mario";
-                        break;
-                    case "Ice":
-                        character = "Ice-Climbers";
-                        break;
-                    case "Mr":
-                        character = "Mr-Game-and-Watch";
-                        break;
-                    case "Young":
-                        character = "Young-Link";
-                        break;
-                }
-                chars.add(character);
+                // omits 'A' at the beginning of the string and replaces dashes with spaces
+                chars.add(character.substring(0, character.length() - 1).replace("-"," "));
             }
         }
         // sorts by numerical value
