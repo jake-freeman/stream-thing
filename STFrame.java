@@ -51,6 +51,7 @@ public class STFrame extends JFrame
         addActionListeners();
         addComponentsToPane(getContentPane());
 
+        // So the initial characters begin as selected
         charSelect(0, 0, CHAR_PATH);
         charSelect(1, 0, CHAR_PATH);
 
@@ -88,7 +89,6 @@ public class STFrame extends JFrame
                 {
                     public void actionPerformed(ActionEvent e)
                     {
-                        System.out.println("Selected(c" + j % MAX_COLORS + "): " + (String)((JButton)e.getSource()).getText());
                         charSelect(j / 6, j % MAX_COLORS, CHAR_PATH);
                     }
                 }
@@ -131,15 +131,16 @@ public class STFrame extends JFrame
     * Include code to handle character changes to
     * update files and button colors.
     *
-    * @param charFileName name of character file currently selected
-    * @param color        [HACK]: This may change form
-    * @param charPath     path to the character folder
+    * @param pIndex   index of the selected player
+    * @param cIndex   index of the selected color
+    * @param charPath path to the character folder
     */
     private void charSelect(int pIndex, int cIndex, String charPath)
     {
         String character = (String)((String)p[pIndex].getSelectedItem()).replace(" ", "-");
-        System.out.println("Selected(" + pIndex + ", " + cIndex + "): " + character);
         colorButtons(pIndex, getColorsForChar(character));
+
+        // [FUTURE HACK]: add code to set image file names
     }
 
     /**
@@ -160,7 +161,6 @@ public class STFrame extends JFrame
             System.out.println("i is: " + i);
             if (i < colorList.length + startIndex)
             {
-                System.out.println("Button Color: " + Integer.toHexString(colorList[i - startIndex]));
                 colors[i].setBackground(new Color(colorList[i - startIndex]));
                 colors[i].setEnabled(true);
                 colors[i].setOpaque(true);
@@ -218,7 +218,6 @@ public class STFrame extends JFrame
         {
             try
             {
-                System.out.println("Current file: " + f.getName());
                 BufferedImage img = ImageIO.read(f);
                 // get color from bottom left corner
                 int charColor = img.getRGB(0, img.getHeight() - 1);
