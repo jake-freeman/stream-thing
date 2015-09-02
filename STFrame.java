@@ -22,8 +22,6 @@ public class STFrame extends JFrame
     private final String CHAR_PATH  = "chars";
     private final int    MAX_COLORS = 6;
 
-    //private char[]   currentColors;
-
     private JButton[]   colors;
     private JComboBox[] p;
 
@@ -38,11 +36,17 @@ public class STFrame extends JFrame
 
         colors  = new JButton[12];
         for (int i = 0; i < colors.length; i++)
+        {
             colors[i] = new JButton();
+            colors[i].setPreferredSize(new Dimension(30,15));
+        }
 
         p       = new JComboBox[2];
         p[0]    = new JComboBox<Object>(charList.toArray());
         p[1]    = new JComboBox<Object>(charList.toArray());
+
+        p[0].setPreferredSize(new Dimension(200, 20));
+        p[1].setPreferredSize(new Dimension(200, 20));
 
         addActionListeners();
         addComponentsToPane(getContentPane());
@@ -66,8 +70,10 @@ public class STFrame extends JFrame
                 {
                     public void actionPerformed(ActionEvent e)
                     {
-                        System.out.println("Selected(" + j + "): " + (String)((JComboBox)e.getSource()).getSelectedItem());
-                        charSelect((String)((JComboBox)e.getSource()).getSelectedItem(), 'A', CHAR_PATH);
+                        String character = (String)((String)((JComboBox)e.getSource()).getSelectedItem()).replace(" ", "-");
+                        System.out.println("Selected(" + j + "): " + character);
+                        colorButtons(j, getColorsForChar(character));
+                        charSelect(character, 'A', CHAR_PATH);
                     }
                 }
             );
@@ -82,7 +88,7 @@ public class STFrame extends JFrame
                 {
                     public void actionPerformed(ActionEvent e)
                     {
-                        System.out.println("Selected(p" + j + "): " + (String)((JButton)e.getSource()).getText());
+                        System.out.println("Selected(c" + j % MAX_COLORS + "): " + (String)((JButton)e.getSource()).getText());
                         charSelect((String)((JButton)e.getSource()).getText(), 'A'/*[HACK]*/, CHAR_PATH);
                     }
                 }
@@ -125,14 +131,13 @@ public class STFrame extends JFrame
     * Include code to handle character changes to
     * update files and button colors.
     *
-    * @param charName name of character currently selected
-    * @param color    [HACK]: This may change form
-    * @param charPath path to the character folder
+    * @param charFileName name of character file currently selected
+    * @param color        [HACK]: This may change form
+    * @param charPath     path to the character folder
     */
-    private void charSelect(String charName, char color, String charPath)
+    private void charSelect(String charFileName, char color, String charPath)
     {
-        String fileNameBase = charName.replace(" ", "-");
-        // select character
+
     }
 
     /**
@@ -148,16 +153,23 @@ public class STFrame extends JFrame
     {
         int startIndex = pIndex * 6;
 
-        for (int i = startIndex; i < i + MAX_COLORS; i++)
+        for (int i = startIndex; i < startIndex + MAX_COLORS; i++)
         {
+            System.out.println("i is: " + i);
             if (i < colorList.length + startIndex)
             {
+                System.out.println("Button Color: " + Integer.toHexString(colorList[i - startIndex]));
                 colors[i].setBackground(new Color(colorList[i - startIndex]));
                 colors[i].setEnabled(true);
+                colors[i].setOpaque(true);
+                colors[i].setContentAreaFilled(true);
+                colors[i].setBorderPainted(true);
             }
             else
             {
-                colors[i].setBackground(new Color(128,128,128));
+                colors[i].setOpaque(false);
+                colors[i].setContentAreaFilled(false);
+                colors[i].setBorderPainted(false);
                 colors[i].setEnabled(false);
             }
         }
@@ -204,9 +216,12 @@ public class STFrame extends JFrame
         {
             try
             {
+                System.out.println("Current file: " + f.getName());
                 BufferedImage img = ImageIO.read(f);
                 // get color from bottom left corner
                 int charColor = img.getRGB(0, img.getHeight() - 1);
+                System.out.println("Color: " + Integer.toHexString(charColor));
+                colorList[i] = charColor;
                 i++;
             }
             catch (IOException e)
@@ -248,9 +263,10 @@ public class STFrame extends JFrame
         ArrayList<File> fileList = getFileList(path);
         for (Iterator<File> it = fileList.iterator(); it.hasNext();)
         {
-            if (!it.next().getName().contains(charFileName))
+            if (!it.next().getName().startsWith(charFileName))
                 it.remove();
         }
+        Collections.sort(fileList);
         return fileList;
     }
 }
