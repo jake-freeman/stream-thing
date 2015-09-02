@@ -51,6 +51,9 @@ public class STFrame extends JFrame
         addActionListeners();
         addComponentsToPane(getContentPane());
 
+        charSelect(0, 0, CHAR_PATH);
+        charSelect(1, 0, CHAR_PATH);
+
         pack();
         setVisible(true);
     }
@@ -70,10 +73,7 @@ public class STFrame extends JFrame
                 {
                     public void actionPerformed(ActionEvent e)
                     {
-                        String character = (String)((String)((JComboBox)e.getSource()).getSelectedItem()).replace(" ", "-");
-                        System.out.println("Selected(" + j + "): " + character);
-                        colorButtons(j, getColorsForChar(character));
-                        charSelect(character, 'A', CHAR_PATH);
+                        charSelect(j, 0, CHAR_PATH);
                     }
                 }
             );
@@ -89,7 +89,7 @@ public class STFrame extends JFrame
                     public void actionPerformed(ActionEvent e)
                     {
                         System.out.println("Selected(c" + j % MAX_COLORS + "): " + (String)((JButton)e.getSource()).getText());
-                        charSelect((String)((JButton)e.getSource()).getText(), 'A'/*[HACK]*/, CHAR_PATH);
+                        charSelect(j / 6, j % MAX_COLORS, CHAR_PATH);
                     }
                 }
             );
@@ -135,9 +135,11 @@ public class STFrame extends JFrame
     * @param color        [HACK]: This may change form
     * @param charPath     path to the character folder
     */
-    private void charSelect(String charFileName, char color, String charPath)
+    private void charSelect(int pIndex, int cIndex, String charPath)
     {
-
+        String character = (String)((String)p[pIndex].getSelectedItem()).replace(" ", "-");
+        System.out.println("Selected(" + pIndex + ", " + cIndex + "): " + character);
+        colorButtons(pIndex, getColorsForChar(character));
     }
 
     /**
