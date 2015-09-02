@@ -6,15 +6,21 @@
  *
  */
 
+// [HACK]: make imports more specific
 import javax.swing.*;
+import javax.imageio.*;
+
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.*;
+
 import java.util.*;
 import java.io.*;
 
 public class STFrame extends JFrame
 {
-    private final String CHAR_PATH = "chars";
+    private final String CHAR_PATH  = "chars";
+    private final int    MAX_COLORS = 6;
 
     //private char[]   currentColors;
 
@@ -120,13 +126,41 @@ public class STFrame extends JFrame
     * update files and button colors.
     *
     * @param charName name of character currently selected
-    * @param color    
+    * @param color    [HACK]: This may change form
     * @param charPath path to the character folder
     */
     private void charSelect(String charName, char color, String charPath)
     {
         String fileNameBase = charName.replace(" ", "-");
         // select character
+    }
+
+    /**
+    * Colors the buttons and enables or disables the
+    * buttons based on the color list and player
+    * index.
+    *
+    * @param pIndex    the index of the player being updated
+    * @param colorList a list of RGB values to get the button
+    *                  color to
+    */
+    private void colorButtons(int pIndex, int[] colorList)
+    {
+        int startIndex = pIndex * 6;
+
+        for (int i = startIndex; i < i + MAX_COLORS; i++)
+        {
+            if (i < colorList.length + startIndex)
+            {
+                colors[i].setBackground(new Color(colorList[i - startIndex]));
+                colors[i].setEnabled(true);
+            }
+            else
+            {
+                colors[i].setBackground(new Color(128,128,128));
+                colors[i].setEnabled(false);
+            }
+        }
     }
 
     /**
@@ -155,8 +189,37 @@ public class STFrame extends JFrame
     }
 
     /**
+    * Gets the available colors for a certain character.
+    *
+    * @param  charFileName the partial file name for the char
+    * @return              an array of RGB colors
+    */
+    private int[] getColorsForChar(String charFileName)
+    {
+        ArrayList<File> fileList = getFileList(CHAR_PATH, charFileName);
+        int[] colorList = new int[fileList.size()];
+
+        int i = 0;
+        for (File f: fileList)
+        {
+            try
+            {
+                BufferedImage img = ImageIO.read(f);
+                // get color from bottom left corner
+                int charColor = img.getRGB(0, img.getHeight() - 1);
+                i++;
+            }
+            catch (IOException e)
+            {
+                System.out.println("Failed to read file: " + f.getName());
+            }
+        }
+        return colorList;
+    }
+
+    /**
     * Gets a list of the image files in the form of an
-    * abstract file list
+    * abstract file list.
     *
     * @param path the directory to create the file list of
     * @return     a list of files in the given directory
@@ -167,5 +230,27 @@ public class STFrame extends JFrame
         File dir = new File(path);
         File[] fileListArray = dir.listFiles();
         return new ArrayList<File>(Arrays.asList(fileListArray));
+    }
+
+    /**
+    * Gets a list of the image files for a character in the
+    * form of an abstract file list.
+    *
+    * @param path         the directory to create the file
+    *                     list of
+    * @param charFileName the character to make the list from
+    * @return             a list of files in the given directory
+    *                     for the given character
+    * @see                ArrayList
+    */
+    private ArrayList<File> getFileList(String path, String charFileName)
+    {
+        ArrayList<File> fileList = getFileList(path);
+        for (Iterator<File> it = fileList.iterator(); it.hasNext();)
+        {
+            if (!it.next().getName().contains(charFileName))
+                it.remove();
+        }
+        return fileList;
     }
 }
