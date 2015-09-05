@@ -1,3 +1,5 @@
 *.class
 build
 img-flip.sh
+*.java
+*.sh

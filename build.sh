@@ -20,7 +20,7 @@ fi
 
 if [ "$1" = "zip" ]
 then
+    rm StreamThing.zip
     cd build
-    java -jar StreamThing.jar
-    zip -r9 StreamThing.jar chars
+    zip -r9 ../StreamThing.zip StreamThing.jar chars
 fi
