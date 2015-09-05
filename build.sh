@@ -6,7 +6,10 @@ mkdir build
 jar cmvf META-INF/MANIFEST.MF build/StreamThing.jar *.class
 
 mkdir build/chars
-cp characters/*.png build/chars/
+mkdir build/chars/left
+mkdir build/chars/right
+cp characters/left/*.png build/chars/left/
+cp characters/right/*.png build/chars/right/
 rm *.class
 
 if [ "$1" = "run" ]

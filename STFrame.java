@@ -19,7 +19,7 @@ import java.io.*;
 
 public class STFrame extends JFrame
 {
-    private final String CHAR_PATH  = "chars";
+    private final String[] CHAR_PATH  = {"chars/left","chars/right"};
     private final int    MAX_COLORS = 6;
 
     private JButton[]   colors;
@@ -31,7 +31,7 @@ public class STFrame extends JFrame
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
 
-        ArrayList<File>   fileList = getFileList(CHAR_PATH);
+        ArrayList<File>   fileList = getFileList(CHAR_PATH[0]);
         ArrayList<String> charList = getCharList(fileList);
 
         colors  = new JButton[12];
@@ -52,8 +52,8 @@ public class STFrame extends JFrame
         addComponentsToPane(getContentPane());
 
         // So the initial characters begin as selected
-        charSelect(0, 0, CHAR_PATH);
-        charSelect(1, 0, CHAR_PATH);
+        charSelect(0, 0, CHAR_PATH[0]);
+        charSelect(1, 0, CHAR_PATH[1]);
 
         pack();
         setVisible(true);
@@ -74,7 +74,7 @@ public class STFrame extends JFrame
                 {
                     public void actionPerformed(ActionEvent e)
                     {
-                        charSelect(j, 0, CHAR_PATH);
+                        charSelect(j, 0, CHAR_PATH[j]);
                     }
                 }
             );
@@ -89,7 +89,7 @@ public class STFrame extends JFrame
                 {
                     public void actionPerformed(ActionEvent e)
                     {
-                        charSelect(j / 6, j % MAX_COLORS, CHAR_PATH);
+                        charSelect(j / 6, j % MAX_COLORS, CHAR_PATH[j / 6]);
                     }
                 }
             );
@@ -210,7 +210,7 @@ public class STFrame extends JFrame
     */
     private int[] getColorsForChar(String charFileName)
     {
-        ArrayList<File> fileList = getFileList(CHAR_PATH, charFileName);
+        ArrayList<File> fileList = getFileList(CHAR_PATH[0], charFileName);
         int[] colorList = new int[fileList.size()];
 
         int i = 0;
