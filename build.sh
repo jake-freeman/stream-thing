@@ -17,3 +17,10 @@ then
     cd build
     java -jar StreamThing.jar
 fi
+
+if [ "$1" = "zip" ]
+then
+    rm StreamThing.zip
+    cd build
+    zip -r9 ../StreamThing.zip StreamThing.jar chars
+fi
