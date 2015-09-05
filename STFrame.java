@@ -6,21 +6,29 @@
  *
  */
 
-// [HACK]: make imports more specific
+// UI components
 import javax.swing.*;
-import javax.imageio.*;
-
+import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.*;
 
+// Image handling
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+
+// File and Array handling
 import java.util.*;
-import java.io.*;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+// Copy option enum for Files.copy
+import static java.nio.file.StandardCopyOption.*;
 
 public class STFrame extends JFrame
 {
-    private final String[] CHAR_PATH  = {"chars/left","chars/right"};
-    private final int    MAX_COLORS = 6;
+    private final String[] CHAR_PATH  = {"chars/right","chars/left"};
+    private final int      MAX_COLORS = 6;
 
     private JButton[]   colors;
     private JComboBox[] p;
@@ -137,10 +145,19 @@ public class STFrame extends JFrame
     */
     private void charSelect(int pIndex, int cIndex, String charPath)
     {
-        String character = (String)((String)p[pIndex].getSelectedItem()).replace(" ", "-");
-        colorButtons(pIndex, getColorsForChar(character));
+        String charFileName = ((String)p[pIndex].getSelectedItem()).replace(" ", "-");
 
-        // [FUTURE HACK]: add code to set image file names
+        colorButtons(pIndex, cIndex, getColorsForChar(charFileName));
+
+        try
+        {
+            Files.copy(getFileList(charPath, charFileName).get(cIndex).toPath(), 
+                       Paths.get("Active" + (pIndex + 1) + ".png"), REPLACE_EXISTING);
+        }
+        catch (java.io.IOException e)
+        {
+            System.out.println("File copy failed!");
+        }
     }
 
     /**
@@ -149,19 +166,28 @@ public class STFrame extends JFrame
     * index.
     *
     * @param pIndex    the index of the player being updated
+    * @param cIndex    the index of the currently selected color
     * @param colorList a list of RGB values to get the button
     *                  color to
     */
-    private void colorButtons(int pIndex, int[] colorList)
+    private void colorButtons(int pIndex, int cIndex, int[] colorList)
     {
         int startIndex = pIndex * 6;
 
         for (int i = startIndex; i < startIndex + MAX_COLORS; i++)
         {
-            System.out.println("i is: " + i);
             if (i < colorList.length + startIndex)
             {
                 colors[i].setBackground(new Color(colorList[i - startIndex]));
+                if (i == cIndex + startIndex)
+                {
+                    Border border = new LineBorder(Color.BLACK, 3);
+                    colors[i].setBorder(border);
+                }
+                else
+                {
+                    colors[i].setBorder(UIManager.getBorder("Button.border"));
+                }
                 colors[i].setEnabled(true);
                 colors[i].setOpaque(true);
                 colors[i].setContentAreaFilled(true);
@@ -221,11 +247,10 @@ public class STFrame extends JFrame
                 BufferedImage img = ImageIO.read(f);
                 // get color from bottom left corner
                 int charColor = img.getRGB(0, img.getHeight() - 1);
-                System.out.println("Color: " + Integer.toHexString(charColor));
                 colorList[i] = charColor;
                 i++;
             }
-            catch (IOException e)
+            catch (java.io.IOException e)
             {
                 System.out.println("Failed to read file: " + f.getName());
             }
