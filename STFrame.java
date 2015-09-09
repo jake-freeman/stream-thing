@@ -27,7 +27,7 @@ import static java.nio.file.StandardCopyOption.*;
 
 public class STFrame extends JFrame
 {
-    private final String[] CHAR_PATH  = {"chars/right","chars/left"};
+    private final String[] CHAR_PATH  = {"chars/left","chars/right"};
     private final int      MAX_COLORS = 6;
 
     private JButton[]   colors;
