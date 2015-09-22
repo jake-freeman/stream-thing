@@ -10,3 +10,5 @@ Navigate in to the newly created `build` directory and run `java -jar StreamThin
 _or_
 
 In the main directory run `./build.sh run`
+
+Download a compiled binary [here](https://github.com/jake-freeman/stream-thing/tree/release-0.x)
