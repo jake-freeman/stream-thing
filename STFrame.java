@@ -219,12 +219,20 @@ public class STFrame extends JFrame
             // this effectively picks the default character file for a name
             if (character.charAt(character.length() - 1) == 'A')
             {
-                // omits 'A' at the beginning of the string and replaces dashes with spaces
+                // omits 'A' at the end of the string and replaces dashes with spaces
                 chars.add(character.substring(0, character.length() - 1).replace("-", " "));
             }
         }
         // sorts by numerical value
         Collections.sort(chars);
+
+        //removes sorting char at the beginning of each Melee character name
+        for(int i=0;i<chars.size();i++)
+        {
+            String name=chars.get(i);
+            chars.set(i,name.substring(1,name.length()));
+        }
+
         return chars;
     }
 
@@ -289,7 +297,8 @@ public class STFrame extends JFrame
         ArrayList<File> fileList = getFileList(path);
         for (Iterator<File> it = fileList.iterator(); it.hasNext();)
         {
-            if (!it.next().getName().startsWith(charFileName))
+            String no=it.next().getName();
+            if (!no.substring(1,no.length()).startsWith(charFileName))
                 it.remove();
         }
         Collections.sort(fileList);
